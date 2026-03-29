@@ -224,6 +224,15 @@
                     throw new Error(data?.detail || "Login failed");
                 }
 
+                localStorage.removeItem("rms_access_token");
+                localStorage.removeItem("rms_refresh_token");
+                localStorage.removeItem("rms_user");
+                localStorage.removeItem("rms_company");
+                sessionStorage.removeItem("rms_access_token");
+                sessionStorage.removeItem("rms_refresh_token");
+                sessionStorage.removeItem("rms_user");
+                sessionStorage.removeItem("rms_company");
+
                 const storage = keepSignedInInput.checked ? localStorage : sessionStorage;
                 storage.setItem("rms_access_token", data.access_token);
                 storage.setItem("rms_refresh_token", data.refresh_token);
@@ -231,6 +240,12 @@
                 storage.setItem("rms_company", JSON.stringify(data.company));
 
                 showLoginMessage("success", `Welcome ${data.user.full_name}. Logged in as ${data.user.role}.`);
+
+                if (String(data.user.role).toLowerCase() === "admin") {
+                    setTimeout(() => {
+                        window.location.href = "./admin-dashboard.html";
+                    }, 700);
+                }
             } catch (error) {
                 showLoginMessage("error", error.message || "Login failed");
             } finally {

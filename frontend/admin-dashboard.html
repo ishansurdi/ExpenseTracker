@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Reimbursement Management System</title>
+    <meta name="description" content="Clean admin dashboard for users, roles, assignments, and approval flow.">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        corporate: {
+                            50: "#f0f9ff",
+                            100: "#e0f2fe",
+                            600: "#0284c7",
+                            700: "#0369a1",
+                            900: "#0c4a6e"
+                        },
+                        success: "#059669",
+                        warning: "#d97706",
+                        danger: "#dc2626"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+        .panel {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        }
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-weight: 700;
+            color: #64748b;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            border: 2px solid #0c4a6e;
+            background: #0369a1;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.62rem 1rem;
+            line-height: 1;
+            min-height: 40px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: #0c4a6e;
+            border-color: #082f49;
+        }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            border: 2px solid #334155;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.62rem 1rem;
+            line-height: 1;
+            min-height: 40px;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans text-slate-900 selection:bg-corporate-100 selection:text-corporate-900">
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex h-16 w-full max-w-[1480px] items-center justify-between px-5 sm:px-8 lg:px-10">
+            <div class="flex items-center gap-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded-[3px] bg-corporate-700 font-mono text-xs font-bold text-white">RM</div>
+                <div>
+                    <p class="text-sm font-bold leading-none">ReimburseCorp</p>
+                    <p class="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500">Admin Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden items-center gap-2 rounded-[4px] border border-slate-200 bg-slate-50 px-2 py-1.5 sm:flex">
+                    <div id="adminInitials" class="flex h-7 w-7 items-center justify-center rounded-[3px] bg-corporate-700 text-[11px] font-bold text-white">AD</div>
+                    <div class="min-w-[180px] leading-tight">
+                        <p id="adminProfileName" class="text-xs font-bold text-slate-900">Admin User</p>
+                        <p id="adminProfileOrg" class="text-[10px] uppercase tracking-[0.12em] text-slate-500">ReimburseCorp Workspace</p>
+                    </div>
+                </div>
+                <a href="./index.html" class="btn-secondary">Home</a>
+                <a href="./login.html" class="btn-primary">Switch</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-[1480px] space-y-5 px-5 py-6 sm:px-8 lg:px-10">
+        <p id="dashboardMessage" class="hidden rounded-[4px] border px-3 py-2 text-sm"></p>
+
+        <section class="panel p-5">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="section-title">Admin Controls</p>
+                    <h1 class="mt-1 text-2xl font-extrabold tracking-tight">Professional User and Approval Setup</h1>
+                    <p class="mt-2 text-sm text-slate-600">Head of Reimbursement Finance and Chief Financial Officer are common company-wide roles. Managers are employee-specific.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">Finance Head</p>
+                        <p id="financeHeadCount" class="text-lg font-extrabold">0</p>
+                    </div>
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">CFO</p>
+                        <p id="cfoCount" class="text-lg font-extrabold">0</p>
+                    </div>
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">Managers</p>
+                        <p id="managerCount" class="text-lg font-extrabold">0</p>
+                    </div>
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">Employees</p>
+                        <p id="employeeCount" class="text-lg font-extrabold">0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel p-3">
+            <nav class="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                <a href="#leadership-setup" class="btn-secondary">Leadership</a>
+                <a href="#manager-section" class="btn-secondary">Create Managers</a>
+                <a href="#manager-list-panel" class="btn-secondary">Manager List</a>
+                <a href="#employee-section" class="btn-secondary">Create Employees</a>
+                <a href="#employee-list-panel" class="btn-secondary">Employee List</a>
+                <a href="#assignment-section" class="btn-secondary">Assignments</a>
+            </nav>
+        </section>
+
+        <section class="grid gap-5 xl:grid-cols-[0.98fr_1.02fr]">
+            <div id="leadership-setup" class="panel p-5">
+                <h2 class="text-lg font-extrabold">Finance Leadership Setup</h2>
+                <p class="mt-1 text-sm text-slate-600">Set one common Head of Reimbursement Finance and one common CFO for all employees.</p>
+
+                <div class="mt-4 grid gap-4 md:grid-cols-2">
+                    <form id="financeHeadForm" class="space-y-3 rounded-[4px] border border-slate-200 p-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Head of Reimbursement Finance</p>
+                        <input id="financeHeadName" type="text" placeholder="Rohit Verma" required class="w-full rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <input id="financeHeadEmail" type="email" placeholder="rohit@company.com" required class="w-full rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <button type="submit" class="btn-primary w-full">Set Finance Head</button>
+                    </form>
+
+                    <form id="cfoForm" class="space-y-3 rounded-[4px] border border-slate-200 p-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chief Financial Officer</p>
+                        <input id="cfoName" type="text" placeholder="Rakesh Mehta" required class="w-full rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <input id="cfoEmail" type="email" placeholder="rakesh@company.com" required class="w-full rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <button type="submit" class="btn-primary w-full">Set CFO</button>
+                    </form>
+                </div>
+
+                <div class="mt-4 grid gap-3 md:grid-cols-2">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Current Finance Head</p>
+                        <ul id="financeHeadList" class="mt-2 space-y-2 text-sm"></ul>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Current CFO</p>
+                        <ul id="cfoList" class="mt-2 space-y-2 text-sm"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="manager-section" class="panel p-5">
+                <h2 class="text-lg font-extrabold">Manager Setup</h2>
+                <p class="mt-1 text-sm text-slate-600">Managers differ per employee and are used for first-step approval routing.</p>
+                <form id="managerForm" class="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+                    <input id="managerName" type="text" placeholder="Manager name" required class="rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                    <input id="managerEmail" type="email" placeholder="manager@company.com" required class="rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                    <button type="submit" class="btn-primary">Create Manager</button>
+                </form>
+                <div id="manager-list-panel" class="mt-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Manager List</p>
+                    <ul id="managerList" class="mt-2 space-y-2 text-sm"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="employee-section" class="panel p-5">
+            <div class="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <h2 class="text-lg font-extrabold">Employee Setup</h2>
+                    <p class="mt-1 text-sm text-slate-600">Create employees with manager assignment. Role can be edited in the role column.</p>
+                </div>
+                <form id="employeeForm" class="grid w-full gap-2 sm:w-auto sm:grid-cols-[180px_220px_180px_auto]">
+                    <input id="employeeName" type="text" placeholder="Employee name" required class="rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                    <input id="employeeEmail" type="email" placeholder="employee@company.com" required class="rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                    <select id="employeeManager" required class="rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <option value="">Assign manager</option>
+                    </select>
+                    <button type="submit" class="btn-primary">Create Employee</button>
+                </form>
+            </div>
+
+            <div id="employee-list-panel" class="mt-4 overflow-x-auto rounded-[4px] border border-slate-200">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        <tr>
+                            <th class="px-4 py-3">Employee</th>
+                            <th class="px-4 py-3">Email</th>
+                            <th class="px-4 py-3">Role</th>
+                            <th class="px-4 py-3">Manager</th>
+                            <th class="px-4 py-3">Finance Head</th>
+                            <th class="px-4 py-3">CFO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody" class="divide-y divide-slate-200"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="assignment-section" class="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+            <div class="panel p-5">
+                <h3 class="text-base font-extrabold">Assignment Controls</h3>
+                <p class="mt-1 text-sm text-slate-600">Assign manager per employee. Finance Head and CFO are common for all employees.</p>
+                <div class="mt-3 rounded-[4px] border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+                    <p><span class="font-semibold">Common Finance Head:</span> <span id="commonFinanceHead">Not set</span></p>
+                    <p class="mt-1"><span class="font-semibold">Common CFO:</span> <span id="commonCfo">Not set</span></p>
+                </div>
+                <form id="assignmentForm" class="mt-4 space-y-3">
+                    <select id="assignmentEmployee" required class="w-full rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <option value="">Select employee</option>
+                    </select>
+                    <select id="assignmentManager" required class="w-full rounded-[4px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <option value="">Select manager</option>
+                    </select>
+                    <button type="submit" class="btn-primary w-full">Save Assignment</button>
+                </form>
+            </div>
+
+            <div class="panel overflow-hidden">
+                <div class="border-b border-slate-200 px-5 py-4">
+                    <h3 class="text-base font-extrabold">All Expenses + Override</h3>
+                    <p class="mt-1 text-xs text-slate-500">Admin can view all expenses and submit override decision.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            <tr>
+                                <th class="px-4 py-3">Expense ID</th>
+                                <th class="px-4 py-3">Employee</th>
+                                <th class="px-4 py-3">Amount</th>
+                                <th class="px-4 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTableBody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+                <form id="overrideForm" class="border-t border-slate-200 p-4">
+                    <div class="grid gap-2 sm:grid-cols-[1fr_140px_1fr_auto]">
+                        <input id="overrideExpenseId" type="text" placeholder="Expense ID" required class="rounded-[4px] border border-slate-300 px-3 py-2 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <select id="overrideAction" class="rounded-[4px] border border-slate-300 px-3 py-2 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <option value="force_approve">Approve</option>
+                            <option value="force_reject">Reject</option>
+                        </select>
+                        <input id="overrideReason" type="text" placeholder="Override comment" required class="rounded-[4px] border border-slate-300 px-3 py-2 text-sm outline-none focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <button type="submit" class="btn-primary">Override</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const apiBaseUrl = "http://127.0.0.1:8000";
+        const managerForm = document.getElementById("managerForm");
+        const employeeForm = document.getElementById("employeeForm");
+        const financeHeadForm = document.getElementById("financeHeadForm");
+        const cfoForm = document.getElementById("cfoForm");
+        const assignmentForm = document.getElementById("assignmentForm");
+        const overrideForm = document.getElementById("overrideForm");
+
+        const managerNameInput = document.getElementById("managerName");
+        const managerEmailInput = document.getElementById("managerEmail");
+        const employeeNameInput = document.getElementById("employeeName");
+        const employeeEmailInput = document.getElementById("employeeEmail");
+        const employeeManagerSelect = document.getElementById("employeeManager");
+        const financeHeadNameInput = document.getElementById("financeHeadName");
+        const financeHeadEmailInput = document.getElementById("financeHeadEmail");
+        const cfoNameInput = document.getElementById("cfoName");
+        const cfoEmailInput = document.getElementById("cfoEmail");
+
+        const managerCount = document.getElementById("managerCount");
+        const employeeCount = document.getElementById("employeeCount");
+        const financeHeadCount = document.getElementById("financeHeadCount");
+        const cfoCount = document.getElementById("cfoCount");
+
+        const managerList = document.getElementById("managerList");
+        const employeeTableBody = document.getElementById("employeeTableBody");
+        const financeHeadList = document.getElementById("financeHeadList");
+        const cfoList = document.getElementById("cfoList");
+        const expenseTableBody = document.getElementById("expenseTableBody");
+        const dashboardMessage = document.getElementById("dashboardMessage");
+
+        const assignmentEmployee = document.getElementById("assignmentEmployee");
+        const assignmentManager = document.getElementById("assignmentManager");
+        const commonFinanceHead = document.getElementById("commonFinanceHead");
+        const commonCfo = document.getElementById("commonCfo");
+        const adminInitials = document.getElementById("adminInitials");
+        const adminProfileName = document.getElementById("adminProfileName");
+        const adminProfileOrg = document.getElementById("adminProfileOrg");
+        const overrideExpenseIdInput = document.getElementById("overrideExpenseId");
+        const overrideActionInput = document.getElementById("overrideAction");
+        const overrideReasonInput = document.getElementById("overrideReason");
+
+        const managers = [];
+        const employees = [];
+        const expenses = [];
+        let financeHead = null;
+        let cfo = null;
+
+        function safeParseJson(value) {
+            if (!value) {
+                return null;
+            }
+
+            try {
+                return JSON.parse(value);
+            } catch {
+                return null;
+            }
+        }
+
+        function getSessionData(key) {
+            return safeParseJson(localStorage.getItem(key)) || safeParseJson(sessionStorage.getItem(key));
+        }
+
+        function getInitials(name) {
+            const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+            if (!parts.length) {
+                return "AD";
+            }
+
+            if (parts.length === 1) {
+                return parts[0].slice(0, 2).toUpperCase();
+            }
+
+            return `${parts[0][0] || ""}${parts[1][0] || ""}`.toUpperCase();
+        }
+
+        function renderAdminProfile() {
+            const user = getSessionData("rms_user");
+            const company = getSessionData("rms_company");
+            const name = user?.full_name || "Admin User";
+            const org = company?.name || "ReimburseCorp Workspace";
+
+            adminProfileName.textContent = name;
+            adminProfileOrg.textContent = org;
+            adminInitials.textContent = getInitials(name);
+        }
+
+        function showDashboardMessage(type, text) {
+            dashboardMessage.classList.remove("hidden", "border-red-200", "bg-red-50", "text-red-700", "border-emerald-200", "bg-emerald-50", "text-emerald-700", "border-slate-200", "bg-slate-50", "text-slate-700");
+
+            if (type === "error") {
+                dashboardMessage.classList.add("border-red-200", "bg-red-50", "text-red-700");
+            } else if (type === "success") {
+                dashboardMessage.classList.add("border-emerald-200", "bg-emerald-50", "text-emerald-700");
+            } else {
+                dashboardMessage.classList.add("border-slate-200", "bg-slate-50", "text-slate-700");
+            }
+
+            dashboardMessage.textContent = text;
+        }
+
+        function getToken() {
+            return sessionStorage.getItem("rms_access_token") || localStorage.getItem("rms_access_token");
+        }
+
+        async function apiRequest(path, options = {}) {
+            const token = getToken();
+            if (!token) {
+                window.location.href = "./login.html";
+                throw new Error("No access token found");
+            }
+
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                ...(options.headers || {}),
+            };
+
+            const response = await fetch(`${apiBaseUrl}${path}`, {
+                ...options,
+                headers,
+            });
+
+            let data = null;
+            try {
+                data = await response.json();
+            } catch {
+                data = null;
+            }
+
+            if (!response.ok) {
+                const message = data?.detail || `Request failed with status ${response.status}`;
+                if (response.status === 401) {
+                    localStorage.removeItem("rms_access_token");
+                    localStorage.removeItem("rms_refresh_token");
+                    localStorage.removeItem("rms_user");
+                    localStorage.removeItem("rms_company");
+                    sessionStorage.removeItem("rms_access_token");
+                    sessionStorage.removeItem("rms_refresh_token");
+                    sessionStorage.removeItem("rms_user");
+                    sessionStorage.removeItem("rms_company");
+                    showDashboardMessage("error", message);
+                    setTimeout(() => {
+                        window.location.href = "./login.html";
+                    }, 700);
+                }
+                throw new Error(message);
+            }
+
+            return data;
+        }
+
+        function syncState(bootstrapData) {
+            managers.length = 0;
+            employees.length = 0;
+            expenses.length = 0;
+
+            (bootstrapData.managers || []).forEach((manager) => {
+                managers.push({
+                    id: manager.id,
+                    loginId: manager.login_id,
+                    name: manager.full_name,
+                    email: manager.email,
+                    role: manager.role,
+                });
+            });
+
+            (bootstrapData.employees || []).forEach((employee) => {
+                employees.push({
+                    id: employee.id,
+                    loginId: employee.login_id,
+                    name: employee.full_name,
+                    email: employee.email,
+                    role: employee.role,
+                    managerId: employee.manager_id,
+                    managerName: employee.manager_name || "-",
+                    financeHeadName: employee.finance_head_name || "",
+                    cfoName: employee.cfo_name || "",
+                });
+            });
+
+            (bootstrapData.expenses || []).forEach((expense) => {
+                expenses.push({
+                    id: expense.id,
+                    employeeName: expense.employee_name,
+                    amount: expense.amount,
+                    currencyCode: expense.currency_code,
+                    status: expense.status,
+                });
+            });
+
+            financeHead = bootstrapData.leadership?.finance_head
+                ? {
+                    id: bootstrapData.leadership.finance_head.id,
+                    name: bootstrapData.leadership.finance_head.full_name,
+                    email: bootstrapData.leadership.finance_head.email,
+                }
+                : null;
+
+            cfo = bootstrapData.leadership?.cfo
+                ? {
+                    id: bootstrapData.leadership.cfo.id,
+                    name: bootstrapData.leadership.cfo.full_name,
+                    email: bootstrapData.leadership.cfo.email,
+                }
+                : null;
+        }
+
+        function renderLeaders() {
+            financeHeadList.innerHTML = "";
+            cfoList.innerHTML = "";
+
+            if (!financeHead) {
+                financeHeadList.innerHTML = '<li class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2 text-slate-500">Not set yet.</li>';
+                commonFinanceHead.textContent = "Not set";
+            } else {
+                financeHeadList.innerHTML = `<li class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2">${financeHead.name} (${financeHead.email})</li>`;
+                commonFinanceHead.textContent = financeHead.name;
+            }
+
+            if (!cfo) {
+                cfoList.innerHTML = '<li class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2 text-slate-500">Not set yet.</li>';
+                commonCfo.textContent = "Not set";
+            } else {
+                cfoList.innerHTML = `<li class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2">${cfo.name} (${cfo.email})</li>`;
+                commonCfo.textContent = cfo.name;
+            }
+
+            financeHeadCount.textContent = financeHead ? "1" : "0";
+            cfoCount.textContent = cfo ? "1" : "0";
+        }
+
+        function renderManagers() {
+            managerList.innerHTML = "";
+
+            if (!managers.length) {
+                managerList.innerHTML = '<li class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2 text-slate-500">No managers created.</li>';
+            } else {
+                managers.forEach((manager) => {
+                    const item = document.createElement("li");
+                    item.className = "rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2";
+                    item.textContent = `${manager.name} (${manager.email}) - ${manager.loginId}`;
+                    managerList.appendChild(item);
+                });
+            }
+
+            managerCount.textContent = String(managers.length);
+
+            [employeeManagerSelect, assignmentManager].forEach((select) => {
+                select.innerHTML = "";
+                const placeholder = document.createElement("option");
+                placeholder.value = "";
+                placeholder.textContent = managers.length ? "Select manager" : "No manager created yet";
+                select.appendChild(placeholder);
+
+                managers.forEach((manager) => {
+                    const option = document.createElement("option");
+                    option.value = String(manager.id);
+                    option.textContent = manager.name;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function renderAssignmentTargets() {
+            assignmentEmployee.innerHTML = '<option value="">Select employee</option>';
+            employees.forEach((employee) => {
+                const option = document.createElement("option");
+                option.value = String(employee.id);
+                option.textContent = employee.name;
+                assignmentEmployee.appendChild(option);
+            });
+        }
+
+        function bindRoleSelectHandlers() {
+            const roleSelects = document.querySelectorAll(".employee-role-select");
+            roleSelects.forEach((select) => {
+                select.addEventListener("change", async (event) => {
+                    const employeeId = event.target.getAttribute("data-employee-id");
+                    try {
+                        await apiRequest(`/admin-dashboard/employees/${employeeId}/role`, {
+                            method: "PATCH",
+                            body: JSON.stringify({ role: event.target.value }),
+                        });
+                        showDashboardMessage("success", "Role updated successfully.");
+                        await refreshDashboard();
+                    } catch (error) {
+                        showDashboardMessage("error", error.message || "Failed to update role.");
+                        await refreshDashboard();
+                    }
+                });
+            });
+        }
+
+        function renderEmployees() {
+            employeeTableBody.innerHTML = "";
+
+            if (!employees.length) {
+                employeeTableBody.innerHTML = '<tr><td class="px-4 py-3 text-slate-500" colspan="6">No employees created.</td></tr>';
+                employeeCount.textContent = "0";
+                renderAssignmentTargets();
+                return;
+            }
+
+            employees.forEach((employee, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-slate-900">${employee.name}</td>
+                    <td class="px-4 py-3 text-slate-700">${employee.email}</td>
+                    <td class="px-4 py-3">
+                        <select data-employee-id="${employee.id}" class="employee-role-select rounded-[4px] border border-slate-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-[0.06em] text-slate-700 outline-none focus:border-corporate-600">
+                            <option value="employee" ${employee.role === "employee" ? "selected" : ""}>Employee</option>
+                            <option value="manager" ${employee.role === "manager" ? "selected" : ""}>Manager</option>
+                        </select>
+                    </td>
+                    <td class="px-4 py-3 text-slate-700">${employee.managerName}</td>
+                    <td class="px-4 py-3 text-slate-700">${employee.financeHeadName || "-"}</td>
+                    <td class="px-4 py-3 text-slate-700">${employee.cfoName || "-"}</td>
+                `;
+                employeeTableBody.appendChild(row);
+            });
+
+            employeeCount.textContent = String(employees.length);
+            renderAssignmentTargets();
+            bindRoleSelectHandlers();
+        }
+
+        function getStatusBadge(status) {
+            if (status === "submitted") {
+                return '<span class="rounded-full bg-amber-50 px-2 py-1 text-xs font-semibold text-warning">Submitted</span>';
+            }
+
+            if (status === "overridden") {
+                return '<span class="rounded-full bg-sky-50 px-2 py-1 text-xs font-semibold text-corporate-700">Overridden</span>';
+            }
+
+            if (status.includes("approved")) {
+                return '<span class="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-success">Approved</span>';
+            }
+
+            if (status === "rejected") {
+                return '<span class="rounded-full bg-red-50 px-2 py-1 text-xs font-semibold text-danger">Rejected</span>';
+            }
+
+            return `<span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">${status}</span>`;
+        }
+
+        function renderExpenses() {
+            expenseTableBody.innerHTML = "";
+
+            if (!expenses.length) {
+                expenseTableBody.innerHTML = '<tr><td class="px-4 py-3 text-slate-500" colspan="4">No expenses yet. Use backend endpoint /admin-dashboard/seed-expense for a quick test row.</td></tr>';
+                return;
+            }
+
+            expenses.forEach((expense) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="px-4 py-3 font-mono">${expense.id}</td>
+                    <td class="px-4 py-3">${expense.employeeName}</td>
+                    <td class="px-4 py-3 font-mono">${expense.currencyCode} ${Number(expense.amount).toFixed(2)}</td>
+                    <td class="px-4 py-3">${getStatusBadge(expense.status)}</td>
+                `;
+                expenseTableBody.appendChild(row);
+            });
+        }
+
+        async function refreshDashboard() {
+            const bootstrap = await apiRequest("/admin-dashboard/bootstrap");
+            syncState(bootstrap);
+            renderLeaders();
+            renderManagers();
+            renderEmployees();
+            renderExpenses();
+        }
+
+        financeHeadForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                const data = await apiRequest("/admin-dashboard/leadership/finance-head", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        full_name: financeHeadNameInput.value.trim(),
+                        email: financeHeadEmailInput.value.trim().toLowerCase(),
+                    }),
+                });
+
+                financeHeadForm.reset();
+                showDashboardMessage("success", `Finance head set: ${data.finance_head.full_name}`);
+                if (data.finance_head.temporary_password) {
+                    showDashboardMessage("info", `Finance head created. Temporary password: ${data.finance_head.temporary_password}`);
+                }
+                await refreshDashboard();
+            } catch (error) {
+                showDashboardMessage("error", error.message || "Failed to set finance head.");
+            }
+        });
+
+        cfoForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                const data = await apiRequest("/admin-dashboard/leadership/cfo", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        full_name: cfoNameInput.value.trim(),
+                        email: cfoEmailInput.value.trim().toLowerCase(),
+                    }),
+                });
+
+                cfoForm.reset();
+                showDashboardMessage("success", `CFO set: ${data.cfo.full_name}`);
+                if (data.cfo.temporary_password) {
+                    showDashboardMessage("info", `CFO created. Temporary password: ${data.cfo.temporary_password}`);
+                }
+                await refreshDashboard();
+            } catch (error) {
+                showDashboardMessage("error", error.message || "Failed to set CFO.");
+            }
+        });
+
+        managerForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                const data = await apiRequest("/admin-dashboard/managers", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        full_name: managerNameInput.value.trim(),
+                        email: managerEmailInput.value.trim().toLowerCase(),
+                    }),
+                });
+
+                managerForm.reset();
+                showDashboardMessage("success", `Manager ready: ${data.manager.full_name} (${data.manager.login_id})`);
+                if (data.manager.temporary_password) {
+                    showDashboardMessage("info", `Manager temporary password: ${data.manager.temporary_password}`);
+                }
+                await refreshDashboard();
+            } catch (error) {
+                showDashboardMessage("error", error.message || "Failed to create manager.");
+            }
+        });
+
+        employeeForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (employeeManagerSelect.value === "") {
+                employeeManagerSelect.focus();
+                return;
+            }
+
+            try {
+                const data = await apiRequest("/admin-dashboard/employees", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        full_name: employeeNameInput.value.trim(),
+                        email: employeeEmailInput.value.trim().toLowerCase(),
+                        manager_id: employeeManagerSelect.value,
+                    }),
+                });
+
+                employeeForm.reset();
+                showDashboardMessage("success", `Employee created: ${data.employee.full_name} (${data.employee.login_id})`);
+                if (data.employee.temporary_password) {
+                    showDashboardMessage("info", `Employee temporary password: ${data.employee.temporary_password}`);
+                }
+                await refreshDashboard();
+            } catch (error) {
+                showDashboardMessage("error", error.message || "Failed to create employee.");
+            }
+        });
+
+        assignmentForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (assignmentEmployee.value === "" || assignmentManager.value === "") {
+                return;
+            }
+
+            try {
+                await apiRequest(`/admin-dashboard/employees/${assignmentEmployee.value}/manager`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ manager_id: assignmentManager.value }),
+                });
+                showDashboardMessage("success", "Manager assignment updated.");
+                await refreshDashboard();
+            } catch (error) {
+                showDashboardMessage("error", error.message || "Failed to assign manager.");
+            }
+        });
+
+        overrideForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const expenseId = overrideExpenseIdInput.value.trim();
+            const action = overrideActionInput.value;
+            const reason = overrideReasonInput.value.trim();
+
+            if (!expenseId || !reason) {
+                return;
+            }
+
+            try {
+                await apiRequest(`/admin-dashboard/expenses/${expenseId}/override`, {
+                    method: "POST",
+                    body: JSON.stringify({ action, reason }),
+                });
+
+                overrideForm.reset();
+                showDashboardMessage("success", "Expense override applied.");
+                await refreshDashboard();
+            } catch (error) {
+                showDashboardMessage("error", error.message || "Failed to apply override.");
+            }
+        });
+
+        renderAdminProfile();
+        refreshDashboard().catch((error) => {
+            showDashboardMessage("error", error.message || "Failed to load dashboard data.");
+        });
+    </script>
+</body>
+</html>

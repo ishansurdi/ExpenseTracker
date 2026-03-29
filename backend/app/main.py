@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.routes.admin_dashboard import router as admin_dashboard_router
 from app.routes.auth import router as auth_router
 
 
@@ -16,6 +17,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(admin_dashboard_router)
 
 
 @app.get("/")
