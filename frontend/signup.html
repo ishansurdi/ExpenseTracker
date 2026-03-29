@@ -57,6 +57,19 @@
             position: relative;
             z-index: 1;
         }
+        .button-spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 9999px;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen font-sans text-slate-900 selection:bg-corporate-100 selection:text-corporate-900">
@@ -80,15 +93,15 @@
                     <p class="mt-3 text-sm leading-7 text-slate-600">This creates the company account, assigns base country and currency, and provisions the first Admin user.</p>
                 </div>
 
-                <form class="space-y-5" onsubmit="event.preventDefault();">
+                <form id="signupForm" class="space-y-5">
                     <div class="grid gap-5 sm:grid-cols-2">
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-800">Company name</span>
-                            <input type="text" placeholder="Northstar Holdings" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <input id="companyName" type="text" placeholder="Northstar Holdings" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" required>
                         </label>
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-800">Country</span>
-                            <select id="countrySelect" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <select id="countrySelect" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" required>
                                 <option>Loading countries...</option>
                             </select>
                             <p id="countryStatus" class="mt-2 text-xs text-slate-500">Countries and currencies are loaded from the live country API.</p>
@@ -98,22 +111,22 @@
                     <div class="grid gap-5 sm:grid-cols-2">
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-800">Admin full name</span>
-                            <input type="text" placeholder="Sarah Malik" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <input id="adminFullName" type="text" placeholder="Sarah Malik" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" required>
                         </label>
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-800">Work email</span>
-                            <input type="email" placeholder="admin@northstar.com" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <input id="adminEmail" type="email" placeholder="admin@northstar.com" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" required>
                         </label>
                     </div>
 
                     <div class="grid gap-5 sm:grid-cols-2">
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-800">Password</span>
-                            <input type="password" placeholder="Create password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <input id="password" type="password" placeholder="Create password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" minlength="8" required>
                         </label>
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-800">Confirm password</span>
-                            <input type="password" placeholder="Repeat password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                            <input id="confirmPassword" type="password" placeholder="Repeat password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" minlength="8" required>
                         </label>
                     </div>
 
@@ -128,13 +141,18 @@
                     </div>
 
                     <label class="flex items-start gap-3 text-sm text-slate-600">
-                        <input type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-corporate-600 focus:ring-corporate-500">
+                        <input id="termsAccepted" type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-corporate-600 focus:ring-corporate-500" required>
                         <span>I confirm this company workspace is being created for business use and the first user will be assigned Admin permissions.</span>
                     </label>
 
+                    <p id="signupMessage" class="hidden rounded-[4px] border px-3 py-2 text-sm"></p>
+
                     <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                        <button class="rounded-[4px] bg-corporate-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-corporate-900">Create company account</button>
-                        <a href="./login.html" class="rounded-[4px] border border-slate-200 bg-white px-6 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Go to sign in</a>
+                        <button id="signupButton" type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-[4px] bg-corporate-700 px-6 py-3.5 text-base font-bold uppercase tracking-[0.08em] text-white shadow-sm ring-1 ring-corporate-900/20 transition hover:bg-corporate-900 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto sm:min-w-[220px]">
+                            <span id="signupButtonSpinner" class="button-spinner hidden" aria-hidden="true"></span>
+                            <span id="signupButtonText">Create Account</span>
+                        </button>
+                        <a href="./login.html" class="inline-flex w-full items-center justify-center rounded-[4px] border-2 border-slate-400 bg-white px-6 py-3.5 text-base font-bold uppercase tracking-[0.08em] text-slate-900 transition hover:bg-slate-100 sm:w-auto sm:min-w-[220px]">Log In</a>
                     </div>
                 </form>
             </div>
@@ -164,9 +182,41 @@
 
     <script>
         const countriesEndpoint = "https://restcountries.com/v3.1/all?fields=name,currencies";
+        const apiBaseUrl = "http://127.0.0.1:8000";
+
+        const signupForm = document.getElementById("signupForm");
+        const signupButton = document.getElementById("signupButton");
+        const signupButtonSpinner = document.getElementById("signupButtonSpinner");
+        const signupButtonText = document.getElementById("signupButtonText");
+        const signupMessage = document.getElementById("signupMessage");
+        const companyNameInput = document.getElementById("companyName");
+        const adminFullNameInput = document.getElementById("adminFullName");
+        const adminEmailInput = document.getElementById("adminEmail");
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
         const countrySelect = document.getElementById("countrySelect");
         const currencyBadge = document.getElementById("currencyBadge");
         const countryStatus = document.getElementById("countryStatus");
+
+        function showSignupMessage(type, text) {
+            signupMessage.classList.remove("hidden", "border-red-200", "bg-red-50", "text-red-700", "border-emerald-200", "bg-emerald-50", "text-emerald-700", "border-slate-200", "bg-slate-50", "text-slate-700");
+
+            if (type === "error") {
+                signupMessage.classList.add("border-red-200", "bg-red-50", "text-red-700");
+            } else if (type === "success") {
+                signupMessage.classList.add("border-emerald-200", "bg-emerald-50", "text-emerald-700");
+            } else {
+                signupMessage.classList.add("border-slate-200", "bg-slate-50", "text-slate-700");
+            }
+
+            signupMessage.textContent = text;
+        }
+
+        function setSignupLoading(isLoading) {
+            signupButton.disabled = isLoading;
+            signupButtonSpinner.classList.toggle("hidden", !isLoading);
+            signupButtonText.textContent = isLoading ? "Creating Account..." : "Create Account";
+        }
 
         function formatCurrencySummary(currencies) {
             const entries = Object.entries(currencies || {});
@@ -247,7 +297,81 @@
             }
         }
 
+        async function submitSignup(event) {
+            event.preventDefault();
+
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                showSignupMessage("error", "Passwords do not match.");
+                return;
+            }
+
+            const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+            if (!selectedOption || !selectedOption.value) {
+                showSignupMessage("error", "Please select a country.");
+                return;
+            }
+
+            const currencyFull = selectedOption.dataset.currencyFull || "";
+            const currencyParts = currencyFull.split(" - ");
+            const currencyCode = (currencyParts[0] || "").trim();
+            const currencyName = (currencyParts[1] || "").split(" (")[0].trim();
+            const symbolMatch = currencyFull.match(/\(([^)]+)\)/);
+            const currencySymbol = symbolMatch ? symbolMatch[1] : "";
+
+            if (!currencyCode) {
+                showSignupMessage("error", "Selected country is missing currency data.");
+                return;
+            }
+
+            const payload = {
+                company_name: companyNameInput.value.trim(),
+                country_name: selectedOption.value,
+                currency_code: currencyCode,
+                currency_name: currencyName || null,
+                currency_symbol: currencySymbol || null,
+                admin_full_name: adminFullNameInput.value.trim(),
+                admin_email: adminEmailInput.value.trim().toLowerCase(),
+                password: passwordInput.value
+            };
+
+            setSignupLoading(true);
+            showSignupMessage("info", "Creating your company account...");
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/auth/signup`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data?.detail || "Signup failed");
+                }
+
+                localStorage.setItem("rms_access_token", data.access_token);
+                localStorage.setItem("rms_refresh_token", data.refresh_token);
+                localStorage.setItem("rms_user", JSON.stringify(data.user));
+                localStorage.setItem("rms_company", JSON.stringify(data.company));
+
+                const loginId = data?.user?.login_id ? ` Login ID: ${data.user.login_id}` : "";
+                showSignupMessage("success", `Signup successful.${loginId} Redirecting to sign in...`);
+
+                setTimeout(() => {
+                    window.location.href = "./login.html";
+                }, 1300);
+            } catch (error) {
+                showSignupMessage("error", error.message || "Signup failed");
+            } finally {
+                setSignupLoading(false);
+            }
+        }
+
         countrySelect.addEventListener("change", updateCurrencyDisplay);
+        signupForm.addEventListener("submit", submitSignup);
         loadCountries();
     </script>
 </body>

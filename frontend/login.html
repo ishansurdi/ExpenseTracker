@@ -9,25 +9,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style type="text/tailwindcss">
-        @theme {
-            --color-corporate-50: #f0f9ff;
-            --color-corporate-100: #e0f2fe;
-            --color-corporate-600: #0284c7;
-            --color-corporate-900: #0c4a6e;
-            --color-slate-50: #f8fafc;
-            --color-slate-100: #f1f5f9;
-            --color-slate-200: #e2e8f0;
-            --color-slate-400: #94a3b8;
-            --color-slate-500: #64748b;
-            --color-slate-700: #334155;
-            --color-slate-800: #1e293b;
-            --color-slate-900: #0f172a;
-            --color-success: #059669;
-            --font-sans: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        corporate: {
+                            50: "#f0f9ff",
+                            100: "#e0f2fe",
+                            600: "#0284c7",
+                            900: "#0c4a6e"
+                        },
+                        success: "#059669"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        };
+    </script>
     <style>
         body {
             background:
@@ -54,6 +56,19 @@
         .auth-side > * {
             position: relative;
             z-index: 1;
+        }
+        .button-spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 9999px;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -104,10 +119,10 @@
                     <p class="mt-3 text-sm leading-7 text-slate-600">Use your assigned email and password. Your role decides the dashboard you enter.</p>
                 </div>
 
-                <form class="space-y-5" onsubmit="event.preventDefault();">
+                <form id="loginForm" class="space-y-5">
                     <label class="block">
-                        <span class="mb-2 block text-sm font-semibold text-slate-800">Work email</span>
-                        <input type="email" placeholder="you@company.com" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <span class="mb-2 block text-sm font-semibold text-slate-800">Work email or login ID</span>
+                        <input id="identifier" type="text" placeholder="you@company.com or A0001" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" required>
                     </label>
 
                     <label class="block">
@@ -115,7 +130,7 @@
                             <span class="text-sm font-semibold text-slate-800">Password</span>
                             <a href="#" class="text-xs font-medium text-corporate-600 hover:text-corporate-900">Forgot password?</a>
                         </div>
-                        <input type="password" placeholder="Enter password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                        <input id="password" type="password" placeholder="Enter password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100" minlength="8" required>
                     </label>
 
                     <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -129,17 +144,101 @@
                     </div>
 
                     <label class="flex items-center gap-3 text-sm text-slate-600">
-                        <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-corporate-600 focus:ring-corporate-500">
+                        <input id="keepSignedIn" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-corporate-600 focus:ring-corporate-500">
                         <span>Keep me signed in on this device</span>
                     </label>
 
+                    <p id="loginMessage" class="hidden rounded-[4px] border px-3 py-2 text-sm"></p>
+
                     <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                        <button class="rounded-[4px] bg-corporate-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-corporate-900">Sign in</button>
-                        <a href="./signup.html" class="rounded-[4px] border border-slate-200 bg-white px-6 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Create company first</a>
+                        <button id="loginButton" type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-[4px] bg-corporate-700 px-6 py-3.5 text-base font-bold uppercase tracking-[0.08em] text-white shadow-sm ring-1 ring-corporate-900/20 transition hover:bg-corporate-900 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto sm:min-w-[220px]">
+                            <span id="loginButtonSpinner" class="button-spinner hidden" aria-hidden="true"></span>
+                            <span id="loginButtonText">Log In</span>
+                        </button>
+                        <a href="./signup.html" class="inline-flex w-full items-center justify-center rounded-[4px] border-2 border-slate-400 bg-white px-6 py-3.5 text-base font-bold uppercase tracking-[0.08em] text-slate-900 transition hover:bg-slate-100 sm:w-auto sm:min-w-[220px]">Create Account</a>
                     </div>
                 </form>
             </div>
         </section>
     </div>
+
+    <script>
+        const apiBaseUrl = "http://127.0.0.1:8000";
+        const loginForm = document.getElementById("loginForm");
+        const loginButton = document.getElementById("loginButton");
+        const loginButtonSpinner = document.getElementById("loginButtonSpinner");
+        const loginButtonText = document.getElementById("loginButtonText");
+        const loginMessage = document.getElementById("loginMessage");
+        const identifierInput = document.getElementById("identifier");
+        const passwordInput = document.getElementById("password");
+        const keepSignedInInput = document.getElementById("keepSignedIn");
+
+        function showLoginMessage(type, text) {
+            loginMessage.classList.remove("hidden", "border-red-200", "bg-red-50", "text-red-700", "border-emerald-200", "bg-emerald-50", "text-emerald-700", "border-slate-200", "bg-slate-50", "text-slate-700");
+
+            if (type === "error") {
+                loginMessage.classList.add("border-red-200", "bg-red-50", "text-red-700");
+            } else if (type === "success") {
+                loginMessage.classList.add("border-emerald-200", "bg-emerald-50", "text-emerald-700");
+            } else {
+                loginMessage.classList.add("border-slate-200", "bg-slate-50", "text-slate-700");
+            }
+
+            loginMessage.textContent = text;
+        }
+
+        function setLoginLoading(isLoading) {
+            loginButton.disabled = isLoading;
+            loginButtonSpinner.classList.toggle("hidden", !isLoading);
+            loginButtonText.textContent = isLoading ? "Logging In..." : "Log In";
+        }
+
+        async function submitLogin(event) {
+            event.preventDefault();
+
+            const payload = {
+                identifier: identifierInput.value.trim(),
+                password: passwordInput.value
+            };
+
+            if (!payload.identifier || !payload.password) {
+                showLoginMessage("error", "Please enter your identifier and password.");
+                return;
+            }
+
+            setLoginLoading(true);
+            showLoginMessage("info", "Checking your credentials...");
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/auth/login`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data?.detail || "Login failed");
+                }
+
+                const storage = keepSignedInInput.checked ? localStorage : sessionStorage;
+                storage.setItem("rms_access_token", data.access_token);
+                storage.setItem("rms_refresh_token", data.refresh_token);
+                storage.setItem("rms_user", JSON.stringify(data.user));
+                storage.setItem("rms_company", JSON.stringify(data.company));
+
+                showLoginMessage("success", `Welcome ${data.user.full_name}. Logged in as ${data.user.role}.`);
+            } catch (error) {
+                showLoginMessage("error", error.message || "Login failed");
+            } finally {
+                setLoginLoading(false);
+            }
+        }
+
+        loginForm.addEventListener("submit", submitLogin);
+    </script>
 </body>
 </html>
