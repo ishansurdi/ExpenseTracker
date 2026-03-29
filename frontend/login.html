@@ -241,10 +241,39 @@
 
                 showLoginMessage("success", `Welcome ${data.user.full_name}. Logged in as ${data.user.role}.`);
 
-                if (String(data.user.role).toLowerCase() === "admin") {
+                const role = String(data.user.role).toLowerCase();
+                if (role === "admin") {
                     setTimeout(() => {
                         window.location.href = "./admin-dashboard.html";
                     }, 700);
+                    return;
+                }
+
+                if (role === "employee") {
+                    setTimeout(() => {
+                        window.location.href = "./employee-dashboard.html";
+                    }, 700);
+                    return;
+                }
+
+                if (role === "manager") {
+                    try {
+                        const meResponse = await fetch(`${apiBaseUrl}/dashboard/me`, {
+                            headers: {
+                                Authorization: `Bearer ${data.access_token}`,
+                            },
+                        });
+                        const meData = await meResponse.json();
+
+                        const isLeadership = Boolean(meData?.leadership?.is_finance_head || meData?.leadership?.is_cfo);
+                        setTimeout(() => {
+                            window.location.href = isLeadership ? "./finance-dashboard.html" : "./manager-dashboard.html";
+                        }, 700);
+                    } catch {
+                        setTimeout(() => {
+                            window.location.href = "./manager-dashboard.html";
+                        }, 700);
+                    }
                 }
             } catch (error) {
                 showLoginMessage("error", error.message || "Login failed");

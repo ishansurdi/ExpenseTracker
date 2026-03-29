@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routes.admin_dashboard import router as admin_dashboard_router
 from app.routes.auth import router as auth_router
+from app.routes.workflow_dashboard import router as workflow_dashboard_router
 
 
 app = FastAPI(title=settings.app_name)
@@ -18,6 +19,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(admin_dashboard_router)
+app.include_router(workflow_dashboard_router)
 
 
 @app.get("/")

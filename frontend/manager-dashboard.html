@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard | Reimbursement Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: #f8fafc; color: #0f172a; font-family: Inter, sans-serif; }
+        .panel { border: 1px solid #e2e8f0; border-radius: 0.75rem; background: #fff; box-shadow: 0 10px 30px rgba(15,23,42,0.05); }
+        .btn-primary { display:inline-flex; align-items:center; justify-content:center; border-radius:.25rem; border:2px solid #0c4a6e; background:#0369a1; color:#fff; font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; padding:.62rem 1rem; min-height:40px; }
+        .btn-secondary { display:inline-flex; align-items:center; justify-content:center; border-radius:.25rem; border:2px solid #334155; background:#fff; color:#0f172a; font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; padding:.62rem 1rem; min-height:40px; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex h-16 w-full max-w-[1480px] items-center justify-between px-5 sm:px-8 lg:px-10">
+            <div class="flex items-center gap-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded-[3px] bg-sky-700 font-mono text-xs font-bold text-white">RM</div>
+                <div>
+                    <p class="text-sm font-bold">ReimburseCorp</p>
+                    <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500">Manager Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="./index.html" class="btn-secondary">Home</a>
+                <a href="./login.html" class="btn-primary">Switch</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-[1480px] space-y-5 px-5 py-6 sm:px-8 lg:px-10">
+        <p id="msg" class="hidden rounded-[4px] border px-3 py-2 text-sm"></p>
+
+        <section class="panel p-5">
+            <div class="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Manager Controls</p>
+                    <h1 class="mt-1 text-2xl font-extrabold tracking-tight">Employees Under You + Reimbursement Approvals</h1>
+                    <p class="mt-1 text-sm text-slate-600">Review your team applications, approve/reject with comments, and track status flow.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2"><p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">Your ID</p><p id="meId" class="font-mono text-sm font-bold">-</p></div>
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2"><p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">Employees</p><p id="employeeCount" class="text-lg font-extrabold">0</p></div>
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2"><p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">Pending</p><p id="pendingCount" class="text-lg font-extrabold">0</p></div>
+                    <div class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2"><p class="text-[10px] uppercase tracking-[0.14em] text-slate-500">All Apps</p><p id="allCount" class="text-lg font-extrabold">0</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+            <div class="panel p-5">
+                <h2 class="text-lg font-extrabold">Employee List Under Manager</h2>
+                <ul id="employeeList" class="mt-3 space-y-2 text-sm"></ul>
+            </div>
+
+            <div class="panel p-5">
+                <h2 class="text-lg font-extrabold">Pending Reimbursement Approvals</h2>
+                <div class="mt-3 overflow-x-auto rounded-[4px] border border-slate-200">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            <tr>
+                                <th class="px-4 py-3">Expense</th>
+                                <th class="px-4 py-3">Employee</th>
+                                <th class="px-4 py-3">Amount</th>
+                                <th class="px-4 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvalTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel p-5">
+            <h2 class="text-lg font-extrabold">Approve / Reject</h2>
+            <form id="decisionForm" class="mt-3 grid gap-2 sm:grid-cols-[1fr_150px_1fr_auto]">
+                <input id="expenseId" required placeholder="Expense ID" class="rounded-[4px] border border-slate-300 px-3 py-2 text-sm">
+                <select id="decision" class="rounded-[4px] border border-slate-300 px-3 py-2 text-sm">
+                    <option value="approved">Approve</option>
+                    <option value="rejected">Reject</option>
+                </select>
+                <input id="comment" placeholder="Comment" class="rounded-[4px] border border-slate-300 px-3 py-2 text-sm">
+                <button type="submit" class="btn-primary">Submit</button>
+            </form>
+        </section>
+
+        <section class="panel p-5">
+            <h2 class="text-lg font-extrabold">All Team Applications</h2>
+            <div class="mt-3 overflow-x-auto rounded-[4px] border border-slate-200">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        <tr>
+                            <th class="px-4 py-3">Expense</th>
+                            <th class="px-4 py-3">Employee</th>
+                            <th class="px-4 py-3">Amount</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Approvals / Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allTable"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const apiBaseUrl = "http://127.0.0.1:8000";
+        const msg = document.getElementById("msg");
+        const employeeList = document.getElementById("employeeList");
+        const approvalTable = document.getElementById("approvalTable");
+        const allTable = document.getElementById("allTable");
+        const employeeCount = document.getElementById("employeeCount");
+        const pendingCount = document.getElementById("pendingCount");
+        const allCount = document.getElementById("allCount");
+        const meId = document.getElementById("meId");
+
+        function showMessage(type, text) {
+            msg.className = "rounded-[4px] border px-3 py-2 text-sm";
+            if (type === "error") msg.classList.add("border-red-200", "bg-red-50", "text-red-700");
+            else if (type === "success") msg.classList.add("border-emerald-200", "bg-emerald-50", "text-emerald-700");
+            else msg.classList.add("border-slate-200", "bg-slate-50", "text-slate-700");
+            msg.textContent = text;
+            msg.classList.remove("hidden");
+        }
+
+        function clearAuthAndRedirect() {
+            [localStorage, sessionStorage].forEach((s) => {
+                s.removeItem("rms_access_token");
+                s.removeItem("rms_refresh_token");
+                s.removeItem("rms_user");
+                s.removeItem("rms_company");
+            });
+            window.location.href = "./login.html";
+        }
+
+        function getToken() {
+            return sessionStorage.getItem("rms_access_token") || localStorage.getItem("rms_access_token");
+        }
+
+        async function api(path, options = {}) {
+            const token = getToken();
+            if (!token) return clearAuthAndRedirect();
+            const response = await fetch(`${apiBaseUrl}${path}`, {
+                ...options,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    ...(options.headers || {})
+                }
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                if (response.status === 401) clearAuthAndRedirect();
+                throw new Error(data.detail || "Request failed");
+            }
+            return data;
+        }
+
+        function approvalsText(approvals) {
+            if (!approvals || !approvals.length) return "No approvals yet";
+            return approvals.map((a) => {
+                const stage = a.stage === 1 ? "Manager" : (a.stage === 2 ? "Finance Head" : "CFO");
+                const actor = a.approver_name ? `${a.approver_name} ` : "";
+                return `${stage}: ${actor}${a.decision}${a.comment ? ` (${a.comment})` : ""}`;
+            }).join(" | ");
+        }
+
+        function renderAllTable(rows) {
+            allTable.innerHTML = "";
+            if (!rows.length) {
+                allTable.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-slate-500">No applications found for your team.</td></tr>';
+                return;
+            }
+
+            rows.forEach((item) => {
+                const row = document.createElement("tr");
+                row.className = "border-t border-slate-200";
+                row.innerHTML = `
+                    <td class="px-4 py-3 font-mono text-xs">${item.id}</td>
+                    <td class="px-4 py-3">${item.employee_name}</td>
+                    <td class="px-4 py-3 font-mono">${item.currency_code} ${Number(item.amount).toFixed(2)}</td>
+                    <td class="px-4 py-3">${item.status}</td>
+                    <td class="px-4 py-3 text-xs">${approvalsText(item.approvals)}</td>
+                `;
+                allTable.appendChild(row);
+            });
+        }
+
+        function render(data) {
+            meId.textContent = data.me.user.login_id;
+            employeeCount.textContent = String(data.overview.summary.employee_count);
+            pendingCount.textContent = String(data.overview.summary.pending_count);
+            allCount.textContent = String(data.overview.summary.total_application_count || 0);
+
+            employeeList.innerHTML = "";
+            if (!data.overview.employees.length) {
+                employeeList.innerHTML = '<li class="rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2 text-slate-500">No employees under this manager yet.</li>';
+            } else {
+                data.overview.employees.forEach((emp) => {
+                    const item = document.createElement("li");
+                    item.className = "rounded-[4px] border border-slate-200 bg-slate-50 px-3 py-2";
+                    item.textContent = `${emp.full_name} (${emp.email}) - ${emp.login_id}`;
+                    employeeList.appendChild(item);
+                });
+            }
+
+            approvalTable.innerHTML = "";
+            if (!data.overview.pending_approvals.length) {
+                approvalTable.innerHTML = '<tr><td colspan="4" class="px-4 py-3 text-slate-500">No pending approvals.</td></tr>';
+            } else {
+                data.overview.pending_approvals.forEach((item) => {
+                    const row = document.createElement("tr");
+                    row.className = "border-t border-slate-200";
+                    row.innerHTML = `
+                        <td class="px-4 py-3 font-mono text-xs">${item.id}</td>
+                        <td class="px-4 py-3">${item.employee_name}</td>
+                        <td class="px-4 py-3 font-mono">${item.currency_code} ${Number(item.amount).toFixed(2)}</td>
+                        <td class="px-4 py-3">${item.status}</td>
+                    `;
+                    approvalTable.appendChild(row);
+                });
+            }
+
+            renderAllTable(data.overview.all_applications || []);
+        }
+
+        async function load() {
+            const [me, overview] = await Promise.all([
+                api("/dashboard/me"),
+                api("/dashboard/manager/overview")
+            ]);
+            render({ me, overview });
+        }
+
+        document.getElementById("decisionForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const expenseId = document.getElementById("expenseId").value.trim();
+            const decision = document.getElementById("decision").value;
+            const comment = document.getElementById("comment").value.trim();
+            try {
+                await api(`/dashboard/approvals/${expenseId}/decision`, {
+                    method: "POST",
+                    body: JSON.stringify({ decision, comment })
+                });
+                showMessage("success", "Decision saved.");
+                e.target.reset();
+                await load();
+            } catch (err) {
+                showMessage("error", err.message);
+            }
+        });
+
+        load().catch((err) => showMessage("error", err.message));
+    </script>
+</body>
+</html>
