@@ -141,7 +141,7 @@ def signup_company(payload: CompanySignupRequest, request: Request, db=Depends(g
 		raise
 	except Exception as exc:
 		db.rollback()
-		raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Signup failed: {exc}") from exc
+		raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Signup failed. Please try again.") from exc
 
 
 @router.post("/login", response_model=AuthResponse)
@@ -207,4 +207,4 @@ def login(payload: LoginRequest, request: Request, db=Depends(get_db)):
 		raise
 	except Exception as exc:
 		db.rollback()
-		raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Login failed: {exc}") from exc
+		raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Login failed. Please try again.") from exc
