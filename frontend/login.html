@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | Reimbursement Management System</title>
+    <meta name="description" content="Sign in for employees, managers, and admins.">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @theme {
+            --color-corporate-50: #f0f9ff;
+            --color-corporate-100: #e0f2fe;
+            --color-corporate-600: #0284c7;
+            --color-corporate-900: #0c4a6e;
+            --color-slate-50: #f8fafc;
+            --color-slate-100: #f1f5f9;
+            --color-slate-200: #e2e8f0;
+            --color-slate-400: #94a3b8;
+            --color-slate-500: #64748b;
+            --color-slate-700: #334155;
+            --color-slate-800: #1e293b;
+            --color-slate-900: #0f172a;
+            --color-success: #059669;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+    </style>
+    <style>
+        body {
+            background:
+                radial-gradient(circle at top right, rgba(2, 132, 199, 0.08), transparent 24%),
+                radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.05), transparent 28%),
+                #f8fafc;
+        }
+        .auth-shell {
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+        }
+        .auth-side {
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-side::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 28px 28px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .auth-side > * {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans text-slate-900 selection:bg-corporate-100 selection:text-corporate-900">
+    <div class="min-h-screen lg:grid lg:grid-cols-[0.9fr_1.1fr]">
+        <aside class="auth-side hidden bg-slate-900 lg:flex lg:flex-col lg:justify-between lg:px-12 lg:py-16">
+            <div>
+                <a href="./index.html" class="inline-flex items-center gap-2">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-[4px] bg-corporate-600 font-mono text-sm font-bold text-white">RM</div>
+                    <div>
+                        <p class="text-sm font-bold tracking-tight text-white">ReimburseCorp</p>
+                        <p class="text-[11px] uppercase tracking-[0.22em] text-slate-400">Secure workspace access</p>
+                    </div>
+                </a>
+                <h2 class="mt-10 max-w-lg text-4xl font-bold leading-tight text-white">One sign in for employees, managers, and admins.</h2>
+                <p class="mt-5 max-w-xl text-sm leading-7 text-slate-300">Authentication is shared. Role permissions decide what each user sees after login, while the same access point supports the full reimbursement workflow.</p>
+            </div>
+
+            <div class="grid gap-4">
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-corporate-100">Access model</p>
+                    <div class="mt-4 grid gap-3 text-sm text-slate-300">
+                        <div class="rounded-xl border border-white/10 px-4 py-3">Employee: submit and track expenses</div>
+                        <div class="rounded-xl border border-white/10 px-4 py-3">Manager: review team approvals</div>
+                        <div class="rounded-xl border border-white/10 px-4 py-3">Admin: manage users and policies</div>
+                    </div>
+                </div>
+                <div class="rounded-2xl border border-corporate-600/20 bg-corporate-600/10 p-5 text-sm leading-7 text-slate-200">If this is your company’s first time here, create the company workspace first and the initial Admin account will be provisioned automatically.</div>
+            </div>
+        </aside>
+
+        <section class="flex items-center justify-center px-6 py-12 lg:px-12 lg:py-16">
+            <div class="auth-shell w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-7 sm:p-9">
+                <div class="mb-8 flex items-center justify-between gap-4">
+                    <a href="./index.html" class="flex items-center gap-2 lg:hidden">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-[4px] bg-corporate-600 font-mono text-sm font-bold text-white">RM</div>
+                        <div>
+                            <p class="text-sm font-bold tracking-tight text-slate-900">ReimburseCorp</p>
+                            <p class="text-[11px] uppercase tracking-[0.22em] text-slate-500">Secure sign in</p>
+                        </div>
+                    </a>
+                    <a href="./signup.html" class="text-sm font-medium text-slate-500 transition-colors hover:text-corporate-600">Create company</a>
+                </div>
+
+                <div class="mb-8">
+                    <p class="mb-3 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-700">Unified access</p>
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Sign in to your workspace</h1>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">Use your assigned email and password. Your role decides the dashboard you enter.</p>
+                </div>
+
+                <form class="space-y-5" onsubmit="event.preventDefault();">
+                    <label class="block">
+                        <span class="mb-2 block text-sm font-semibold text-slate-800">Work email</span>
+                        <input type="email" placeholder="you@company.com" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                    </label>
+
+                    <label class="block">
+                        <div class="mb-2 flex items-center justify-between gap-3">
+                            <span class="text-sm font-semibold text-slate-800">Password</span>
+                            <a href="#" class="text-xs font-medium text-corporate-600 hover:text-corporate-900">Forgot password?</a>
+                        </div>
+                        <input type="password" placeholder="Enter password" class="w-full rounded-[4px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-corporate-600 focus:ring-2 focus:ring-corporate-100">
+                    </label>
+
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Workspace access</p>
+                                <p class="mt-1 text-sm font-medium text-slate-900">Role-based landing after successful sign in</p>
+                            </div>
+                            <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-success ring-1 ring-slate-200">Secure session</span>
+                        </div>
+                    </div>
+
+                    <label class="flex items-center gap-3 text-sm text-slate-600">
+                        <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-corporate-600 focus:ring-corporate-500">
+                        <span>Keep me signed in on this device</span>
+                    </label>
+
+                    <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+                        <button class="rounded-[4px] bg-corporate-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-corporate-900">Sign in</button>
+                        <a href="./signup.html" class="rounded-[4px] border border-slate-200 bg-white px-6 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Create company first</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

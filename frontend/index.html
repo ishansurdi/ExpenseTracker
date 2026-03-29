@@ -3,314 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reimbursement Management</title>
-    <meta name="description" content="A clear reimbursement workspace for employees, managers, and admins.">
+    <title>Reimbursement Management System</title>
+    <meta name="description" content="Enterprise expense routing, OCR ingestion, and multi-currency reconciliation.">
+    
+    <!-- Tailwind v4 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        paper: "#f5f1e8",
-                        ink: "#1e1a17",
-                        sand: "#e5dccb",
-                        clay: "#b85c38",
-                        pine: "#2f5d50",
-                        fog: "#d7d2c8",
-                        slate: "#5e5a54",
-                        navy: "#27364a",
-                        amber: "#c79a43",
-                        olive: "#727654",
-                        berry: "#7d4c54"
+                        corporate: {
+                            50: "#f0f9ff",
+                            100: "#e0f2fe",
+                            600: "#0284c7",
+                            900: "#0c4a6e"
+                        },
+                        success: "#059669",
+                        warning: "#d97706"
                     },
                     fontFamily: {
-                        sans: ["'Plus Jakarta Sans'", "sans-serif"],
-                        display: ["'Newsreader'", "serif"]
-                    },
-                    boxShadow: {
-                        card: "0 18px 40px rgba(30, 26, 23, 0.08)"
+                        sans: ["Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
                     }
                 }
             }
         };
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css">
-</head>
-<body class="bg-paper text-ink font-sans selection:bg-clay selection:text-paper">
-    <div class="page-shell min-h-screen">
-        <header class="sticky top-0 z-20 border-b border-ink/10 bg-paper/90 backdrop-blur-sm">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-                <a href="#" class="flex items-center gap-3">
-                    <span class="brand-mark flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-white text-sm font-bold tracking-[0.3em] text-clay">RM</span>
-                    <div>
-                        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate">Expense Workflow</p>
-                        <p class="text-sm font-medium">Reimbursement Management</p>
-                    </div>
-                </a>
-                <nav class="hidden items-center gap-8 text-sm font-medium text-slate lg:flex">
-                    <a href="#why" class="transition hover:text-ink">Why it works</a>
-                    <a href="#roles" class="transition hover:text-ink">Role views</a>
-                    <a href="#workflow" class="transition hover:text-ink">Workflow</a>
-                    <a href="#contact" class="transition hover:text-ink">Contact</a>
-                </nav>
-                <a href="#demo" class="rounded-full border border-ink px-5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-paper">Request demo</a>
-            </div>
-        </header>
 
-        <main>
-            <section class="mx-auto grid max-w-7xl gap-12 px-6 pb-16 pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-24 lg:pt-16">
-                <div class="fade-up flex flex-col justify-center">
-                    <p class="eyebrow mb-4 text-xs font-bold uppercase tracking-[0.35em] text-clay">Built for real approval chains</p>
-                    <h1 class="max-w-3xl font-display text-5xl leading-tight text-ink sm:text-6xl lg:text-7xl">
-                        Expense approvals that feel orderly, visible, and fair.
+    <style>
+        :root {
+            --color-slate-200: #e2e8f0;
+            --color-slate-900: #0f172a;
+        }
+        body { 
+            background-color: #ffffff; 
+            color: var(--color-slate-900);
+            text-rendering: optimizeLegibility; 
+            -webkit-font-smoothing: antialiased; 
+        }
+        /* Subtle corporate dot grid for the hero section */
+        .bg-dot-grid {
+            background-image: radial-gradient(var(--color-slate-200) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        /* Structural styling for uniqueness */
+        .structural-border {
+            border: 1px solid var(--color-slate-200);
+        }
+        .structural-shadow {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col selection:bg-corporate-100 selection:text-corporate-900">
+
+    <!-- GLOBAL NAVIGATION -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 bg-corporate-600 text-white flex items-center justify-center font-bold font-mono text-sm rounded-[2px]">
+                    RM
+                </div>
+                <span class="font-bold tracking-tight text-slate-900 text-lg">Reimburse<span class="text-slate-500 font-normal">Corp</span></span>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#workflows" class="hover:text-corporate-600 transition-colors">Approval Workflows</a>
+                <a href="#features" class="hover:text-corporate-600 transition-colors">OCR & Global FX</a>
+                <a href="#roles" class="hover:text-corporate-600 transition-colors">Role Management</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <a href="./login.html" class="text-sm font-medium text-slate-600 hover:text-slate-900">Sign In</a>
+                <a href="./signup.html" class="bg-corporate-600 text-white px-5 py-2 text-sm font-medium rounded-[3px] hover:bg-corporate-900 transition-colors shadow-sm">
+                    Create Company
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main class="flex-grow">
+        <section class="relative bg-slate-50 border-b border-slate-200 overflow-hidden">
+            <div class="absolute inset-0 bg-dot-grid opacity-50 pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-6 pt-20 pb-24 relative z-10 grid lg:grid-cols-[1fr_1.1fr] gap-12 items-center">
+                
+                <!-- Value Proposition -->
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-full mb-6 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-corporate-600"></span>
+                        <span class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Enterprise Grade Expense Control</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.15] mb-6">
+                        Automate complex reimbursement workflows.
                     </h1>
-                    <p class="mt-6 max-w-2xl text-lg leading-8 text-slate">
-                        A reimbursement workspace where employees submit once, managers review with context, and admins control every rule without turning finance into a maze.
+                    
+                    <p class="text-lg text-slate-600 leading-relaxed mb-8 max-w-lg">
+                        Replace manual, error-prone expense management with a structured system. Define multi-level thresholds, automate currency conversion, and establish crystal-clear reporting lines.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="./signup.html" class="bg-corporate-600 text-white px-6 py-3 font-medium rounded-[3px] hover:bg-corporate-900 transition-colors shadow-sm text-center">
+                            Start Company Setup
+                        </a>
+                        <a href="./login.html" class="bg-white border border-slate-200 text-slate-700 px-6 py-3 font-medium rounded-[3px] hover:bg-slate-50 transition-colors shadow-sm text-center">
+                            Sign In To Workspace
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Conceptual Dashboard/Flow UI (Unique Corporate Visualization) -->
+                <div class="relative bg-white structural-border rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                        <h3 class="font-semibold text-slate-900">Approval Logic Configuration</h3>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-1 rounded">RULE_ID: #8892</span>
+                    </div>
+
+                    <!-- Flow Visualization -->
+                    <div class="space-y-4">
+                        <!-- Step 1 -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-sm font-bold text-slate-600">1</div>
+                                <div class="w-px h-10 bg-slate-200 my-1"></div>
+                            </div>
+                            <div class="flex-grow bg-slate-50 border border-slate-200 p-3 rounded-[4px]">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-sm font-semibold text-slate-900">Direct Manager Approval</span>
+                                    <span class="text-[10px] font-mono font-semibold text-corporate-600 bg-corporate-50 px-2 py-0.5 rounded">REQUIRED</span>
+                                </div>
+                                <p class="text-xs text-slate-500">Expense routes directly to assigned Line Manager.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 (Conditional) -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-sm font-bold text-slate-600">2</div>
+                                <div class="w-px h-10 bg-slate-200 my-1"></div>
+                            </div>
+                            <div class="flex-grow border border-slate-200 rounded-[4px] overflow-hidden">
+                                <div class="bg-slate-50 px-3 py-2 border-b border-slate-200 flex justify-between items-center">
+                                    <span class="text-sm font-semibold text-slate-900">Conditional Threshold Flow</span>
+                                    <span class="text-[10px] font-mono font-semibold text-warning bg-amber-50 px-2 py-0.5 rounded border border-amber-200">HYBRID RULE</span>
+                                </div>
+                                <div class="grid grid-cols-2 divide-x divide-slate-200 bg-white">
+                                    <div class="p-3 text-center">
+                                        <p class="text-[10px] uppercase text-slate-500 font-semibold mb-1">Percentage Rule</p>
+                                        <p class="text-sm font-medium text-slate-900">> 60% Consensus</p>
+                                    </div>
+                                    <div class="p-3 text-center bg-slate-50/50">
+                                        <p class="text-[10px] uppercase text-slate-500 font-semibold mb-1">Specific Override</p>
+                                        <p class="text-sm font-medium text-slate-900">CFO Approval</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Step -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full bg-success text-white flex items-center justify-center text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                            </div>
+                            <div class="flex-grow flex items-center">
+                                <span class="text-sm font-bold text-success">Expense Finalized & Processed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CORE FEATURES: DATA INGESTION & FX -->
+        <section id="features" class="max-w-7xl mx-auto px-6 py-24">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-corporate-600 font-semibold tracking-wide uppercase text-sm mb-3">Intelligent Automation</h2>
+                <h3 class="text-3xl font-bold text-slate-900">Remove manual data entry entirely.</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Feature: OCR -->
+                <div class="bg-white structural-border structural-shadow rounded-lg p-8 flex flex-col">
+                    <div class="w-12 h-12 bg-slate-100 rounded flex items-center justify-center mb-6 text-slate-700 border border-slate-200">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">Optical Character Recognition (OCR)</h4>
+                    <p class="text-slate-600 mb-8 flex-grow">
+                        Employees simply scan a receipt. The system automatically reads and generates the expense claim, pre-filling the amount, date, description, and merchant details.
+                    </p>
+                    
+                    <!-- Code/Data visualization -->
+                    <div class="bg-slate-900 rounded-md p-4 mt-auto">
+                        <div class="flex items-center gap-2 border-b border-slate-700 pb-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                            <span class="text-[10px] text-slate-400 font-mono ml-2">ocr_parser.json</span>
+                        </div>
+                        <pre class="text-[11px] font-mono text-slate-300 leading-relaxed">
+<span class="text-corporate-100">"merchant"</span>: <span class="text-green-400">"Hilton Hotels"</span>,
+<span class="text-corporate-100">"date"</span>: <span class="text-green-400">"2026-03-29"</span>,
+<span class="text-corporate-100">"amount"</span>: <span class="text-amber-300">450.00</span>,
+<span class="text-corporate-100">"expense_type"</span>: <span class="text-green-400">"Lodging"</span>,
+<span class="text-corporate-100">"confidence_score"</span>: <span class="text-amber-300">0.99</span>
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Feature: FX Conversion -->
+                <div class="bg-white structural-border structural-shadow rounded-lg p-8 flex flex-col">
+                    <div class="w-12 h-12 bg-corporate-50 border border-corporate-200 rounded flex items-center justify-center mb-6 text-corporate-600">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">Global Currency Normalization</h4>
+                    <p class="text-slate-600 mb-8 flex-grow">
+                        Powered by <code>restcountries.com</code> and <code>exchangerate-api</code>. Employees submit expenses in the local environment currency, while Managers review approvals in the Company's standardized base currency.
                     </p>
 
-                    <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-                        <a href="#demo" class="rounded-full bg-navy px-7 py-3 text-center text-sm font-semibold text-paper transition duration-300 hover:-translate-y-0.5 hover:bg-clay">See product story</a>
-                        <a href="#workflow" class="rounded-full border border-ink/20 bg-white px-7 py-3 text-center text-sm font-semibold text-ink transition duration-300 hover:-translate-y-0.5 hover:border-navy hover:text-navy">Review workflow</a>
-                    </div>
-
-                    <div class="mt-12 grid gap-4 sm:grid-cols-3">
-                        <article class="metric-card rounded-3xl border border-ink/10 bg-white p-5 shadow-card fade-up delay-1">
-                            <p class="text-3xl font-bold">3x</p>
-                            <p class="mt-2 text-sm leading-6 text-slate">Faster review movement with visible sequencing and thresholds.</p>
-                        </article>
-                        <article class="metric-card rounded-3xl border border-ink/10 bg-white p-5 shadow-card fade-up delay-2">
-                            <p class="text-3xl font-bold">100%</p>
-                            <p class="mt-2 text-sm leading-6 text-slate">Traceable decisions with comments, status, and timeline context.</p>
-                        </article>
-                        <article class="metric-card rounded-3xl border border-ink/10 bg-white p-5 shadow-card fade-up delay-3">
-                            <p class="text-3xl font-bold">1 view</p>
-                            <p class="mt-2 text-sm leading-6 text-slate">For employees, managers, and admins without interface clutter.</p>
-                        </article>
-                    </div>
-                </div>
-
-                <div class="relative flex items-center justify-center">
-                    <div class="orbital orbital-a absolute left-2 top-0 hidden h-36 w-36 rounded-full border border-amber/40 lg:block"></div>
-                    <div class="orbital orbital-b absolute bottom-12 right-0 hidden h-24 w-24 rounded-3xl border border-pine/30 lg:block"></div>
-
-                    <div class="hero-board fade-up delay-2 w-full max-w-2xl rounded-[2rem] border border-ink/10 bg-white p-5 shadow-card sm:p-7">
-                        <div class="flex items-start justify-between gap-4 border-b border-ink/10 pb-5">
+                    <!-- Currency visualization -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-md p-5 mt-auto">
+                        <div class="flex items-center justify-between mb-4">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.25em] text-clay">Today at a glance</p>
-                                <h2 class="mt-2 text-2xl font-semibold">Approval desk</h2>
+                                <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Employee Input (INR)</p>
+                                <p class="font-mono text-lg font-bold text-slate-900">₹ 15,400.00</p>
                             </div>
-                            <div class="rounded-full border border-pine/20 bg-pine/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-pine transition duration-300 hover:border-pine/40 hover:bg-pine/15">
-                                Live workflow
+                            <div class="text-corporate-600 bg-corporate-50 px-2 py-1 rounded text-xs font-semibold border border-corporate-100">
+                                Live Rate: 0.012
                             </div>
                         </div>
-
-                        <div class="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                            <section class="rounded-[1.5rem] border border-ink/10 bg-paper p-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-semibold">Expense queue</p>
-                                        <p class="mt-1 text-xs uppercase tracking-[0.25em] text-slate">This morning</p>
-                                    </div>
-                                    <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-navy ring-1 ring-navy/10">12 waiting</span>
-                                </div>
-
-                                <div class="mt-4 space-y-3">
-                                    <div class="queue-card rounded-2xl bg-white p-4 ring-1 ring-ink/5">
-                                        <div class="flex items-start justify-between gap-3">
-                                            <div>
-                                                <p class="font-semibold">Client lunch in Dubai</p>
-                                                <p class="mt-1 text-sm text-slate">Employee: Sarah Malik</p>
-                                            </div>
-                                            <span class="rounded-full bg-clay/10 px-3 py-1 text-xs font-semibold text-clay">Waiting for finance</span>
-                                        </div>
-                                        <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate">
-                                            <span class="rounded-full border border-ink/10 px-2 py-1">AED 420</span>
-                                            <span class="rounded-full border border-ink/10 px-2 py-1">Food</span>
-                                            <span class="rounded-full border border-ink/10 px-2 py-1">Converted to USD 114.35</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="queue-card rounded-2xl bg-white p-4 ring-1 ring-ink/5">
-                                        <div class="flex items-start justify-between gap-3">
-                                            <div>
-                                                <p class="font-semibold">Airport transfer receipt</p>
-                                                <p class="mt-1 text-sm text-slate">Employee: Omar Khan</p>
-                                            </div>
-                                            <span class="rounded-full bg-pine/10 px-3 py-1 text-xs font-semibold text-pine">Approved by manager</span>
-                                        </div>
-                                        <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-                                            <div class="rounded-2xl border border-ink/10 px-3 py-2">Manager</div>
-                                            <div class="rounded-2xl border border-pine bg-pine px-3 py-2 text-paper">Finance</div>
-                                            <div class="rounded-2xl border border-ink/10 px-3 py-2">Director</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section class="space-y-4">
-                                <div class="lift-card rounded-[1.5rem] border border-ink/10 p-4">
-                                    <p class="text-sm font-semibold">Decision logic</p>
-                                    <ul class="mt-4 space-y-3 text-sm leading-6 text-slate">
-                                        <li class="flex gap-3"><span class="mt-2 h-2.5 w-2.5 rounded-full bg-navy"></span><span>Manager approval can start the flow automatically.</span></li>
-                                        <li class="flex gap-3"><span class="mt-2 h-2.5 w-2.5 rounded-full bg-clay"></span><span>Percentage thresholds can close approvals early.</span></li>
-                                        <li class="flex gap-3"><span class="mt-2 h-2.5 w-2.5 rounded-full bg-olive"></span><span>Specific approver rules handle CFO or finance overrides.</span></li>
-                                    </ul>
-                                </div>
-
-                                <div class="lift-card rounded-[1.5rem] bg-navy p-5 text-paper">
-                                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-paper/70">OCR ready</p>
-                                    <p class="mt-3 text-xl font-semibold">Receipts become draft claims with amount, date, and merchant clues.</p>
-                                    <div class="mt-5 rounded-2xl border border-paper/15 bg-paper/10 p-4 text-sm leading-6 text-paper/80">
-                                        Not a black box. Low-confidence fields stay visible for user confirmation.
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="why" class="border-y border-ink/10 bg-white">
-                <div class="mx-auto grid max-w-7xl gap-8 px-6 py-14 lg:grid-cols-[0.8fr_1.2fr] lg:px-10">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.3em] text-clay">Why it works</p>
-                        <h2 class="mt-3 font-display text-4xl leading-tight">Designed around finance friction, not just form submission.</h2>
-                    </div>
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <article class="lift-card rounded-[1.75rem] border border-ink/10 p-5">
-                            <p class="text-lg font-semibold">Rule clarity</p>
-                            <p class="mt-3 text-sm leading-7 text-slate">Approval rules stay readable: manager-first, percentage-based, named approvers, or a hybrid path.</p>
-                        </article>
-                        <article class="lift-card rounded-[1.75rem] border border-ink/10 p-5">
-                            <p class="text-lg font-semibold">Currency trust</p>
-                            <p class="mt-3 text-sm leading-7 text-slate">Employees submit in original currency while approvers see company-default values with a clear conversion snapshot.</p>
-                        </article>
-                        <article class="lift-card rounded-[1.75rem] border border-ink/10 p-5">
-                            <p class="text-lg font-semibold">Role precision</p>
-                            <p class="mt-3 text-sm leading-7 text-slate">Admin, manager, and employee experiences are separate enough to be useful and close enough to be learnable fast.</p>
-                        </article>
-                        <article class="lift-card rounded-[1.75rem] border border-ink/10 p-5">
-                            <p class="text-lg font-semibold">Audit trail</p>
-                            <p class="mt-3 text-sm leading-7 text-slate">Every decision has a reason, a person, and a timestamp so no one has to guess how a claim moved.</p>
-                        </article>
-                    </div>
-                </div>
-            </section>
-
-            <section id="roles" class="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-24">
-                <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.3em] text-clay">Role views</p>
-                        <h2 class="mt-3 font-display text-4xl leading-tight">Each screen knows who it is for.</h2>
-                    </div>
-                    <p class="max-w-2xl text-sm leading-7 text-slate">Instead of one overloaded dashboard, the homepage explains the product through the three daily perspectives that matter most.</p>
-                </div>
-
-                <div class="mt-10 grid gap-5 lg:grid-cols-3">
-                    <article class="lift-card rounded-[2rem] border border-ink/10 bg-white p-6 shadow-card">
+                        <div class="w-full h-px bg-slate-200 mb-4"></div>
                         <div class="flex items-center justify-between">
-                            <p class="text-xl font-semibold">Employee</p>
-                            <span class="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-berry">Submit</span>
-                        </div>
-                        <ul class="mt-6 space-y-4 text-sm leading-7 text-slate">
-                            <li>Upload receipt and auto-fill draft expense.</li>
-                            <li>Track approval status without asking finance for updates.</li>
-                            <li>Review approved and rejected expense history in one place.</li>
-                        </ul>
-                    </article>
-
-                    <article class="lift-card rounded-[2rem] border border-ink/10 bg-ink p-6 text-paper shadow-card">
-                        <div class="flex items-center justify-between">
-                            <p class="text-xl font-semibold">Manager</p>
-                            <span class="rounded-full bg-paper/10 px-3 py-1 text-xs font-semibold text-amber">Review</span>
-                        </div>
-                        <ul class="mt-6 space-y-4 text-sm leading-7 text-paper/80">
-                            <li>See pending approvals with employee, category, and converted value.</li>
-                            <li>Approve or reject with comments and move the workflow forward.</li>
-                            <li>Understand whether the manager step is required or conditional.</li>
-                        </ul>
-                    </article>
-
-                    <article class="lift-card rounded-[2rem] border border-ink/10 bg-white p-6 shadow-card">
-                        <div class="flex items-center justify-between">
-                            <p class="text-xl font-semibold">Admin</p>
-                            <span class="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-navy">Control</span>
-                        </div>
-                        <ul class="mt-6 space-y-4 text-sm leading-7 text-slate">
-                            <li>Create employees and managers and define reporting lines.</li>
-                            <li>Configure sequential, percentage, or specific-approver rules.</li>
-                            <li>See all expenses and intervene when exceptions happen.</li>
-                        </ul>
-                    </article>
-                </div>
-            </section>
-
-            <section id="workflow" class="bg-white">
-                <div class="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-24">
-                    <div class="rounded-[2.25rem] border border-ink/10 bg-white/60 p-6 sm:p-8 lg:p-10">
-                        <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.3em] text-clay">Workflow map</p>
-                                <h2 class="mt-3 font-display text-4xl leading-tight">A reimbursement path people can actually understand.</h2>
-                                <p class="mt-5 text-sm leading-7 text-slate">The homepage explains the product through a visible sequence, because the strongest demo is one where judges immediately understand how a claim travels.</p>
-                            </div>
-
-                            <div class="grid gap-4 sm:grid-cols-4">
-                                <article class="step-card rounded-[1.5rem] bg-paper p-5">
-                                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-clay">Step 1</p>
-                                    <p class="mt-3 text-lg font-semibold">Submit expense</p>
-                                    <p class="mt-3 text-sm leading-6 text-slate">Employee enters amount, date, category, receipt, and notes.</p>
-                                </article>
-                                <article class="step-card rounded-[1.5rem] bg-paper p-5">
-                                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-clay">Step 2</p>
-                                    <p class="mt-3 text-lg font-semibold">Apply rule</p>
-                                    <p class="mt-3 text-sm leading-6 text-slate">Manager-first, threshold, named approver, or hybrid logic gets attached.</p>
-                                </article>
-                                <article class="step-card rounded-[1.5rem] bg-paper p-5">
-                                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-clay">Step 3</p>
-                                    <p class="mt-3 text-lg font-semibold">Review chain</p>
-                                    <p class="mt-3 text-sm leading-6 text-slate">The active approver acts, and the next decision point becomes visible.</p>
-                                </article>
-                                <article class="step-card rounded-[1.5rem] bg-paper p-5">
-                                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-clay">Step 4</p>
-                                    <p class="mt-3 text-lg font-semibold">Close with reason</p>
-                                    <p class="mt-3 text-sm leading-6 text-slate">Approved or rejected, with comments and the exact rule that finished it.</p>
-                                </article>
+                                <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Manager View (USD Base)</p>
+                                <p class="font-mono text-xl font-bold text-success">$ 184.80</p>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section id="demo" class="border-t border-ink/10 bg-paper">
-                <div class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-16 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.3em] text-clay">Ready for review</p>
-                        <h2 class="mt-3 font-display text-4xl leading-tight">A homepage that presents the product like a system, not a template.</h2>
-                    </div>
-                    <div class="flex flex-col gap-4 sm:flex-row">
-                        <a href="#contact" class="rounded-full bg-berry px-7 py-3 text-center text-sm font-semibold text-paper transition duration-300 hover:-translate-y-0.5 hover:bg-clay">Talk to us</a>
-                        <a href="#roles" class="rounded-full border border-ink/20 bg-white px-7 py-3 text-center text-sm font-semibold text-ink transition duration-300 hover:-translate-y-0.5 hover:border-berry hover:text-berry">Explore screens</a>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer id="contact" class="bg-ink text-paper">
-            <div class="mx-auto grid max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[1fr_auto] lg:px-10">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-paper/60">Reimbursement Management</p>
-                    <p class="mt-3 max-w-2xl text-sm leading-7 text-paper/70">Built for companies that want expense control without making approvals feel bureaucratic.</p>
-                </div>
-                <div class="flex flex-col gap-2 text-sm text-paper/70 sm:text-right">
-                    <a href="mailto:hello@reimbursement.app" class="transition hover:text-paper">hello@reimbursement.app</a>
-                    <p>Designed for finance, operations, and growing teams.</p>
                 </div>
             </div>
-        </footer>
-    </div>
+        </section>
+
+        <!-- ROLE MANAGEMENT -->
+        <section id="roles" class="bg-slate-50 border-y border-slate-200 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-corporate-600 font-semibold tracking-wide uppercase text-sm mb-3">Access Control</h2>
+                    <h3 class="text-3xl font-bold text-slate-900">Strict hierarchical permissions.</h3>
+                    <p class="text-slate-600 mt-4">One unified platform. Three distinct operational views designed for absolute security and compliance.</p>
+                </div>
+
+                <!-- Corporate Table/Grid for Roles -->
+                <div class="bg-white structural-border rounded-lg shadow-sm overflow-hidden">
+                    <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                        
+                        <!-- Admin -->
+                        <div class="p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-8 h-8 bg-slate-900 text-white rounded flex items-center justify-center shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900">System Admin</h4>
+                            </div>
+                            <ul class="space-y-4 text-sm text-slate-600">
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Auto-provision Company on signup.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Assign roles and define manager reporting relationships.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Configure complex sequential and conditional approval rules.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Global override authority on all pending expenses.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Manager -->
+                        <div class="p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-8 h-8 bg-corporate-600 text-white rounded flex items-center justify-center shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900">Line Manager</h4>
+                            </div>
+                            <ul class="space-y-4 text-sm text-slate-600">
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-corporate-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <span>Review subordinate expenses in unified Company Currency.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-corporate-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <span>Approve or Reject payloads with mandatory comment context.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-corporate-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <span>Escalate requests automatically via pre-defined sequences.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Employee -->
+                        <div class="p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-8 h-8 bg-slate-200 text-slate-700 rounded flex items-center justify-center border border-slate-300 shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900">Employee</h4>
+                            </div>
+                            <ul class="space-y-4 text-sm text-slate-600">
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Submit claims using automated OCR receipt scanning.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Select any global currency for original expense entry.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Real-time visibility into claim approval history and status.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA SECTION -->
+        <section class="max-w-7xl mx-auto px-6 py-24">
+            <div class="bg-corporate-900 rounded-xl overflow-hidden relative shadow-xl">
+                <!-- Abstract geometric background pattern for corporate feel -->
+                <div class="absolute inset-0 opacity-10">
+                    <svg class="h-full w-full" fill="none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path d="M0 100L100 0V100H0z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                
+                <div class="relative z-10 p-12 lg:p-16 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="max-w-2xl text-white">
+                        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Ready to standardize your approvals?</h2>
+                        <p class="text-corporate-100 text-lg">
+                            Admin accounts are auto-provisioned upon first login. Configure your company's base currency, add your team, and define your first rule.
+                        </p>
+                    </div>
+                    <div class="shrink-0 w-full md:w-auto">
+                        <div class="flex flex-col gap-3 w-full md:w-80">
+                            <a href="./signup.html" class="w-full bg-corporate-600 text-white px-6 py-3 text-center font-semibold rounded-[3px] hover:bg-corporate-500 transition-colors shadow-sm">
+                                Create Company Account
+                            </a>
+                            <a href="./login.html" class="w-full bg-white text-slate-900 px-6 py-3 text-center font-semibold rounded-[3px] border border-white/20 hover:bg-slate-100 transition-colors shadow-sm">
+                                Sign In
+                            </a>
+                        </div>
+                        <p class="text-xs text-corporate-100 mt-3 text-center md:text-left opacity-80">Company signup creates the first Admin account automatically.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 pt-12 pb-8">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-corporate-600 text-white flex items-center justify-center font-bold font-mono text-[10px] rounded-[2px]">
+                    RM
+                </div>
+                <span class="font-semibold text-slate-900 text-sm">ReimburseCorp <span class="text-slate-400 font-normal">© 2026</span></span>
+            </div>
+            
+            <div class="flex gap-6 text-sm text-slate-500 font-medium">
+                <a href="./signup.html" class="hover:text-corporate-600 transition-colors">Create Company</a>
+                <a href="./login.html" class="hover:text-corporate-600 transition-colors">Sign In</a>
+                <a href="#roles" class="hover:text-corporate-600 transition-colors">Role Access</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
